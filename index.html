@@ -129,7 +129,10 @@
   if (ADMIN) cfg.n.forEach(function (n) { n.r = n.f.map(function (r) { return [r[0], 0]; }); });
   function koef() {
     // har nasiya: nomi, u (bizning ustama %), r: [[oy, nasiya foizi %]]
-    if (!ADMIN) return cfg.n;
+    // eski format (bot hali qayta yoqilmagan): r = [[oy, umumiy koeffitsient]] -> foizga aylantiramiz, ustama 0
+    if (!ADMIN) return cfg.n.map(function (n) {
+      return n.u === undefined ? { nomi: n.nomi, u: 0, r: n.r.map(function (r) { return [r[0], (r[1] - 1) * 100]; }) } : n;
+    });
     return cfg.n.filter(function (n) { return n.on; }).map(function (n) {
       return { nomi: n.nomi, u: parseFloat(String(n.u).replace(",", ".")) || 0, r: n.f };
     }).filter(function (n) { return n.r.length; });
