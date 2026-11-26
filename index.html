@@ -2,194 +2,241 @@
 <html lang="uz">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a110d">
 <title>5Tech Nasiya</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  :root {
-    --bg: var(--tg-theme-bg-color, #ffffff);
-    --bg2: var(--tg-theme-secondary-bg-color, #f2f3f5);
-    --text: var(--tg-theme-text-color, #111111);
-    --hint: var(--tg-theme-hint-color, #8a8f98);
-    --accent: var(--tg-theme-button-color, #2481cc);
-    --accent-text: var(--tg-theme-button-text-color, #ffffff);
-    --card: var(--tg-theme-section-bg-color, var(--tg-theme-bg-color, #ffffff));
-    --sep: rgba(127, 127, 127, .18);
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; background: var(--bg2); color: var(--text);
-    font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 520px; margin: 0 auto; padding: 16px 16px 32px; }
-  h1 { font-size: 20px; margin: 4px 0 2px; }
-  .sub { color: var(--hint); font-size: 13px; margin-bottom: 14px; }
-  .input { background: var(--card); border-radius: 14px; padding: 14px 16px; display: flex; align-items: baseline; gap: 8px; }
-  .input input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text);
-    font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .input span { color: var(--hint); font-weight: 600; }
-  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
-  .chips::-webkit-scrollbar { display: none; }
-  .chip { flex: none; border: 0; border-radius: 999px; padding: 7px 12px; background: var(--card); color: var(--text); font-size: 13px; font-weight: 600; }
-  .chip.on { background: var(--accent); color: var(--accent-text); }
-  .card { background: var(--card); border-radius: 14px; margin-top: 12px; overflow: hidden; }
-  .card h2 { font-size: 15px; margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--sep); display: flex; justify-content: space-between; }
-  .row { display: flex; align-items: baseline; padding: 11px 16px; border-bottom: 1px solid var(--sep); gap: 10px; }
-  .row:last-child { border-bottom: 0; }
-  .oy { width: 56px; color: var(--hint); font-weight: 600; }
-  .oylik { flex: 1; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .oylik small { font-size: 12px; color: var(--hint); font-weight: 500; }
-  .jami { color: var(--hint); font-size: 12px; text-align: right; font-variant-numeric: tabular-nums; }
-  .best { display: block; color: var(--accent); font-size: 11px; font-weight: 700; white-space: nowrap; }
-  .empty { text-align: center; color: var(--hint); padding: 40px 16px; }
-  .note { color: var(--hint); font-size: 12px; text-align: center; margin-top: 16px; }
-  .adm .card h2 { align-items: center; }
-  .sw { position: relative; width: 44px; height: 26px; flex: none; }
-  .sw input { opacity: 0; width: 0; height: 0; }
-  .sw span { position: absolute; inset: 0; border-radius: 13px; background: var(--sep); transition: .2s; }
-  .sw span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
-  .sw input:checked + span { background: var(--accent); }
-  .sw input:checked + span::after { transform: translateX(18px); }
-  .ust { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--sep); }
-  .ust label { flex: 1; color: var(--hint); font-size: 13px; }
-  .step { width: 36px; height: 36px; border-radius: 10px; border: 0; background: var(--bg2); color: var(--text); font-size: 20px; font-weight: 700; }
-  .ust input { width: 72px; text-align: center; border: 1px solid var(--sep); border-radius: 10px; padding: 7px 4px;
-    background: var(--bg); color: var(--text); font-size: 18px; font-weight: 700; }
-  .fz { padding: 10px 16px 12px; font-size: 12px; color: var(--hint); line-height: 1.7; }
-  .fz b { color: var(--text); font-weight: 600; }
-  .off { opacity: .45; }
-  .save { display: none; width: 100%; margin-top: 16px; border: 0; border-radius: 12px; padding: 14px; background: var(--accent); color: var(--accent-text); font-size: 16px; font-weight: 700; }
+  /* Tsunami 1.0 uslubi: «Botqoq yashil» (tungi) va «Zumrad» (kunduzgi) */
+  body.t-botqoq { --h1:#0b1a12; --h2:#1d3a26; --ac:#7fb56a; --ac2:#b4d99a; --acink:#b4d99a; --act:#08110b; --soft:#18271d;
+    --bg:#0a110d; --card:#121c16; --tx:#e9f0e6; --hint:#8b9a8c; --line:#213026; --k1:#4f8a3c; --k2:#1c6a55; }
+  body.t-zumrad { --h1:#053b2e; --h2:#0f9f6e; --ac:#0e9467; --ac2:#22c08a; --acink:#0e9467; --act:#fff; --soft:#e2f5ec;
+    --bg:#edf4f0; --card:#fff; --tx:#0d1f19; --hint:#62756d; --line:#dfe9e4; --k1:#5eead4; --k2:#16a34a; }
+  :root { --ease:cubic-bezier(.22,.8,.24,1); --bad:#e5484d; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { margin:0; overflow-x:hidden; }
+  body { font:15px/1.38 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--tx);
+    -webkit-font-smoothing:antialiased; padding-bottom:calc(96px + env(safe-area-inset-bottom)); }
+  svg.ic { width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto; }
+  .hdr { position:sticky; top:0; z-index:8; overflow:hidden; background:linear-gradient(120deg, var(--h1), var(--h2)); color:#fff;
+    display:flex; align-items:center; gap:10px; padding:12px 16px; min-height:58px; }
+  .hdr::after { content:""; position:absolute; right:-40px; top:-60px; width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle, rgba(255,255,255,.14), transparent 70%); }
+  .hdr .lg { width:36px; height:36px; border-radius:12px; background:rgba(255,255,255,.14); display:flex; align-items:center; justify-content:center; }
+  .hdr h1 { font-size:19px; margin:0; font-weight:650; letter-spacing:.2px; flex:1; }
+  .hdr small { display:block; font-size:12px; font-weight:500; opacity:.75; }
+  main { max-width:560px; margin:0 auto; padding:14px 14px 0; }
+  .card { background:var(--card); border-radius:16px; padding:12px 14px; margin-bottom:10px; border:1px solid var(--line);
+    box-shadow:0 1px 2px rgba(16,24,40,.04), 0 1px 8px rgba(16,24,40,.03); animation:inUp .35s var(--ease) both; }
+  @keyframes inUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  .lbl { font-size:13px; color:var(--hint); margin:2px 0 6px; font-weight:500; }
+  .price { display:flex; align-items:baseline; gap:8px; }
+  .price input { flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--tx); font:inherit; font-size:30px; font-weight:750; letter-spacing:-.5px; font-variant-numeric:tabular-nums; }
+  .price span { color:var(--hint); font-weight:650; }
+  .chips { display:flex; gap:7px; overflow-x:auto; padding:2px 0 10px; scrollbar-width:none; }
+  .chips::-webkit-scrollbar { display:none; }
+  .chip { flex:none; border:1px solid var(--line); background:var(--card); border-radius:11px; padding:8px 12px; font:inherit; font-size:14px; color:var(--tx); white-space:nowrap; transition:background .2s, color .2s, transform .15s var(--ease); }
+  .chip:active { transform:scale(.95); }
+  .chip.on { background:linear-gradient(135deg, var(--ac), var(--ac2)); color:var(--act); border-color:transparent; font-weight:650; }
+  .kpi { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+  .kpi > div { border-radius:18px; padding:12px 14px; min-height:84px; position:relative; overflow:hidden; animation:inUp .35s var(--ease) both;
+    background:radial-gradient(130% 100% at 100% 0%, color-mix(in srgb, var(--k1) 30%, transparent), transparent 62%), var(--card);
+    border:1px solid color-mix(in srgb, var(--k1) 28%, var(--line)); }
+  .kpi > div.b2 { --k1:#22c08a; --k2:#0e7490; }
+  .kpi small { font-size:12.5px; color:var(--hint); display:flex; align-items:center; gap:7px; font-weight:500; }
+  .kpi small i { width:8px; height:8px; border-radius:50%; background:linear-gradient(135deg, var(--k1), var(--k2)); box-shadow:0 0 10px var(--k1); }
+  .kpi b { font-size:18px; display:block; margin-top:12px; letter-spacing:-.2px; }
+  .kpi em { font-style:normal; font-size:12px; color:var(--hint); }
+  .ph { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .ph .av { width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-weight:750; color:var(--act);
+    background:linear-gradient(135deg, var(--ac), var(--ac2)); flex:none; }
+  .ph h3 { margin:0; font-size:16px; flex:1; }
+  .line { display:flex; align-items:baseline; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
+  .line:last-child { border-bottom:0; padding-bottom:2px; }
+  .line .oy { width:50px; color:var(--hint); font-weight:600; }
+  .line .m { flex:1; font-size:17px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .line .m small { font-size:12px; color:var(--hint); font-weight:500; }
+  .line .j { color:var(--hint); font-size:12px; text-align:right; font-variant-numeric:tabular-nums; }
+  .pill { display:inline-block; margin-left:6px; background:linear-gradient(135deg, var(--ac), var(--ac2)); color:var(--act); border-radius:20px; padding:2px 8px; font-size:11px; font-weight:700; vertical-align:2px; }
+  .empty { text-align:center; color:var(--hint); padding:36px 16px; }
+  .note { color:var(--hint); font-size:12px; text-align:center; margin:14px 0; }
+  .btn { display:flex; align-items:center; justify-content:center; gap:8px; width:100%; border:0; border-radius:16px; padding:15px; font:inherit; font-weight:700; font-size:16px;
+    background:linear-gradient(135deg, var(--ac), var(--ac2)); color:var(--act); box-shadow:0 6px 16px -6px color-mix(in srgb, var(--ac) 60%, transparent); transition:transform .15s var(--ease); }
+  .btn:active { transform:scale(.97); }
+  /* ustama */
+  .ust { display:flex; align-items:center; gap:8px; margin:8px 0 4px; }
+  .ust .t { flex:1; color:var(--hint); font-size:13px; }
+  .step { width:38px; height:38px; border-radius:12px; border:1px solid var(--line); background:var(--soft); color:var(--tx); font-size:20px; font-weight:700; }
+  .step:active { transform:scale(.92); }
+  .ust input { width:74px; text-align:center; border:1px solid var(--line); border-radius:12px; padding:8px 4px; background:var(--bg); color:var(--tx); font:inherit; font-size:18px; font-weight:750; }
+  .fz { font-size:12.5px; color:var(--hint); line-height:1.75; margin-top:6px; }
+  .fz b { color:var(--tx); font-weight:650; }
+  .sw { position:relative; width:46px; height:28px; flex:none; }
+  .sw input { opacity:0; width:0; height:0; }
+  .sw span { position:absolute; inset:0; border-radius:14px; background:var(--line); transition:.25s; }
+  .sw span::after { content:""; position:absolute; left:3px; top:3px; width:22px; height:22px; border-radius:50%; background:#fff; transition:.25s var(--ease); box-shadow:0 1px 3px rgba(0,0,0,.3); }
+  .sw input:checked + span { background:linear-gradient(135deg, var(--ac), var(--ac2)); }
+  .sw input:checked + span::after { transform:translateX(18px); }
+  .card.off { opacity:.5; }
+  /* pastki tablar */
+  .tabs { position:fixed; left:10px; right:10px; bottom:calc(8px + env(safe-area-inset-bottom)); z-index:9; max-width:540px; margin:0 auto;
+    background:color-mix(in srgb, var(--card) 88%, transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--line); border-radius:24px; box-shadow:0 8px 28px -10px rgba(16,24,40,.35); display:flex; padding:5px; }
+  .tabs button { flex:1; border:0; background:none; font:inherit; font-size:11.5px; color:var(--hint); padding:7px 0 6px; border-radius:18px; display:flex; flex-direction:column; align-items:center; gap:2px; transition:color .25s, background .25s; }
+  .tabs button.on { color:var(--acink); background:var(--soft); font-weight:650; }
+  .hide { display:none !important; }
 </style>
 </head>
-<body>
-<main>
-  <h1>🧮 Nasiya hisobi</h1>
-  <div class="sub">Mahsulot narxini so'mda kiriting</div>
-  <label class="input"><input id="narx" inputmode="numeric" autocomplete="off" placeholder="0"><span>so'm</span></label>
-  <div class="chips" id="oylar"></div>
-  <div id="natija"></div>
-  <div class="note" id="note"></div>
-</main>
+<body class="t-botqoq">
+<div class="hdr">
+  <div class="lg"><svg class="ic" viewBox="0 0 24 24"><path d="M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/><path d="M2 19c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2"/><path d="M7 10c0-3 2.5-6 6-6 2 0 3.5 1 4 2-2 0-4 1.5-4 4"/></svg></div>
+  <h1 id="ttl">Nasiya hisobi<small>5Tech</small></h1>
+</div>
+<main id="app"></main>
+<nav class="tabs hide" id="tabs">
+  <button data-t="calc" class="on"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M8 7h8M8 11h2M12 11h0M16 11h0M8 15h2M12 15h0M16 15h0M8 18h0M12 18h0"/></svg>Hisoblash</button>
+  <button data-t="ust"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v18M16.5 7.5c0-1.7-2-3-4.5-3s-4.5 1.3-4.5 3S9.5 10.4 12 11s4.5 1.5 4.5 3.5-2 3-4.5 3-4.5-1.3-4.5-3"/></svg>Ustama</button>
+</nav>
 <script>
 (function () {
   var tg = window.Telegram && Telegram.WebApp;
-  if (tg) { tg.ready(); tg.expand(); }
+  if (tg && tg.initData !== undefined) { tg.ready(); tg.expand(); }
+  var dark = tg && tg.colorScheme ? tg.colorScheme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  document.body.className = dark ? "t-botqoq" : "t-zumrad";
+  try { var hc = dark ? "#0b1a12" : "#053b2e"; tg && tg.setHeaderColor && tg.setHeaderColor(hc); tg && tg.setBackgroundColor && tg.setBackgroundColor(dark ? "#0a110d" : "#edf4f0"); } catch (e) {}
 
-  var cfg = { n: [], q: 1000, i: "" };
-  try {
-    var h = decodeURIComponent(location.hash.slice(1)).replace(/-/g, "+").replace(/_/g, "/");
-    var bin = atob(h), bytes = new Uint8Array(bin.length);
+  // Ma'lumot URL'ning ?d= qismida keladi (Telegram # qismini o'zining tgWebAppData'si bilan band qiladi).
+  function param(name) {
+    var m = new RegExp("[?&]" + name + "=([^&#]*)").exec(location.search) || new RegExp("[#&]" + name + "=([^&]*)").exec(location.hash);
+    return m ? decodeURIComponent(m[1]) : "";
+  }
+  function b64json(s) {
+    s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "=";
+    var bin = atob(s), bytes = new Uint8Array(bin.length);
     for (var k = 0; k < bin.length; k++) bytes[k] = bin.charCodeAt(k);
-    cfg = JSON.parse(new TextDecoder().decode(bytes));
-  } catch (e) { /* bo'sh qoladi */ }
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  var cfg = { n: [], q: 1000, i: "" };
+  try { cfg = b64json(param("d")); } catch (e) {}
+  var ADMIN = !!cfg.a;
+  // admin ma'lumotidan hisob koeffitsientlarini tuzamiz
+  if (ADMIN) cfg.n.forEach(function (n) { n.r = n.f.map(function (r) { return [r[0], 0]; }); });
+  function koef() {
+    if (!ADMIN) return cfg.n;
+    return cfg.n.filter(function (n) { return n.on; }).map(function (n) {
+      var u = 1 + (parseFloat(String(n.u).replace(",", ".")) || 0) / 100;
+      return { nomi: n.nomi, r: n.f.map(function (r) { return [r[0], u * (1 + r[1] / 100)]; }) };
+    }).filter(function (n) { return n.r.length; });
+  }
 
-
-  if (cfg.a) { admin(); return; }
-  var inp = document.getElementById("narx"), out = document.getElementById("natija");
-  var chipsEl = document.getElementById("oylar"), filtr = 0;
-  document.getElementById("note").textContent = cfg.i || "";
-
+  var app = document.getElementById("app"), q = cfg.q || 1000;
   var fmt = function (x) { return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
+  var hap = function (t) { try { tg && tg.HapticFeedback && (t ? tg.HapticFeedback.impactOccurred(t) : tg.HapticFeedback.selectionChanged()); } catch (e) {} };
 
-  var barchaOy = [];
-  cfg.n.forEach(function (n) { n.r.forEach(function (r) { if (barchaOy.indexOf(r[0]) < 0) barchaOy.push(r[0]); }); });
-  barchaOy.sort(function (a, b) { return a - b; });
-  function chips() {
-    var html = '<button class="chip' + (filtr === 0 ? " on" : "") + '" data-oy="0">Hammasi</button>';
-    barchaOy.forEach(function (o) { html += '<button class="chip' + (filtr === o ? " on" : "") + '" data-oy="' + o + '">' + o + " oy</button>"; });
-    chipsEl.innerHTML = html;
+  // ---------- HISOBLASH ----------
+  var narx = 0, filtr = 0;
+  function calcView() {
+    document.getElementById("ttl").innerHTML = "Nasiya hisobi<small>5Tech</small>";
+    var N = koef(), oylar = [];
+    N.forEach(function (n) { n.r.forEach(function (r) { if (oylar.indexOf(r[0]) < 0) oylar.push(r[0]); }); });
+    oylar.sort(function (a, b) { return a - b; });
+    if (filtr && oylar.indexOf(filtr) < 0) filtr = 0;
+    app.innerHTML = '<div class="card"><div class="lbl">Mahsulot narxi</div><div class="price"><input id="narx" inputmode="numeric" autocomplete="off" placeholder="0" value="' + (narx ? fmt(narx) : "") + '"><span>so\'m</span></div></div>' +
+      '<div class="chips" id="oy">' + ['<button class="chip' + (!filtr ? " on" : "") + '" data-oy="0">Hammasi</button>'].concat(oylar.map(function (o) {
+        return '<button class="chip' + (filtr === o ? " on" : "") + '" data-oy="' + o + '">' + o + " oy</button>"; })).join("") + "</div>" +
+      '<div id="res"></div>';
+    var inp = document.getElementById("narx");
+    inp.oninput = function () { narx = +inp.value.replace(/\D/g, "") || 0; inp.value = narx ? fmt(narx) : ""; res(); };
+    document.getElementById("oy").onclick = function (e) { var b = e.target.closest("button"); if (!b) return; filtr = +b.dataset.oy; hap(); calcView(); };
+    res();
+    if (!narx) setTimeout(function () { inp.focus(); }, 150);
   }
-  chipsEl.addEventListener("click", function (e) {
-    var b = e.target.closest("button"); if (!b) return;
-    filtr = +b.dataset.oy; chips(); hisobla();
-    if (tg && tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
-  });
-
-  function narx() { return +inp.value.replace(/\D/g, "") || 0; }
-
-  function hisobla() {
-    var p = narx();
-    if (!cfg.n.length) { out.innerHTML = '<div class="empty">Hali nasiya foizlari kiritilmagan.<br>Admin botda ⚙️ Sozlamalar orqali kiritadi.</div>'; return; }
-    if (p < 10000) { out.innerHTML = '<div class="empty">Narxni kiriting — har bir nasiya bo\'yicha oylik to\'lov shu yerda chiqadi.</div>'; return; }
-    var q = cfg.q || 1000, eng = {}, soni = {};
-    var data = cfg.n.map(function (n) {
+  function res() {
+    var box = document.getElementById("res"), N = koef();
+    if (!N.length) { box.innerHTML = '<div class="empty">Nasiya foizlari hali kiritilmagan.</div>'; return; }
+    if (narx < 10000) { box.innerHTML = '<div class="empty">Narxni kiriting — har bir nasiya bo\'yicha oylik to\'lov shu yerda chiqadi.</div>'; return; }
+    var eng = {}, soni = {}, all = [];
+    var data = N.map(function (n) {
       return { nomi: n.nomi, r: n.r.filter(function (r) { return !filtr || r[0] === filtr; }).map(function (r) {
-        var oylik = Math.ceil(p * r[1] / r[0] / q) * q;
-        soni[r[0]] = (soni[r[0]] || 0) + 1;
-        if (!(r[0] in eng) || oylik < eng[r[0]]) eng[r[0]] = oylik;
-        return { oy: r[0], oylik: oylik, jami: oylik * r[0] };
+        var m = Math.ceil(narx * r[1] / r[0] / q) * q, x = { oy: r[0], m: m, j: m * r[0], nomi: n.nomi };
+        soni[r[0]] = (soni[r[0]] || 0) + 1; if (!(r[0] in eng) || m < eng[r[0]]) eng[r[0]] = m; all.push(x); return x;
       }) };
     }).filter(function (n) { return n.r.length; });
-    if (!data.length) { out.innerHTML = '<div class="empty">Bu muddat bo\'yicha nasiya yo\'q.</div>'; return; }
-    out.innerHTML = data.map(function (n) {
-      return '<div class="card"><h2>🏦 ' + esc(n.nomi) + "</h2>" + n.r.map(function (r) {
-        var best = soni[r.oy] > 1 && eng[r.oy] === r.oylik ? ' <span class="best">ENG ARZON</span>' : "";
-        return '<div class="row"><div class="oy">' + r.oy + ' oy</div><div class="oylik">' + fmt(r.oylik) +
-          " <small>so'm/oy</small>" + best + '</div><div class="jami">jami<br>' + fmt(r.jami) + "</div></div>";
-      }).join("") + "</div>";
+    if (!data.length) { box.innerHTML = '<div class="empty">Bu muddat bo\'yicha nasiya yo\'q.</div>'; return; }
+    var minOylik = all.reduce(function (a, b) { return b.m < a.m ? b : a; });
+    var minJami = all.reduce(function (a, b) { return b.j < a.j ? b : a; });
+    var html = '<div class="kpi"><div><small><i></i>Eng kam oylik</small><b>' + fmt(minOylik.m) + '</b><em>' + esc(minOylik.nomi) + " · " + minOylik.oy + ' oy</em></div>' +
+      '<div class="b2"><small><i></i>Eng kam jami to\'lov</small><b>' + fmt(minJami.j) + '</b><em>' + esc(minJami.nomi) + " · " + minJami.oy + ' oy</em></div></div>';
+    html += data.map(function (n, i) {
+      return '<div class="card" style="animation-delay:' + (i * 40) + 'ms"><div class="ph"><div class="av">' + esc(n.nomi.charAt(0)) + '</div><h3>' + esc(n.nomi) + '</h3></div>' +
+        n.r.map(function (r) {
+          return '<div class="line"><div class="oy">' + r.oy + ' oy</div><div class="m">' + fmt(r.m) + " <small>so'm/oy</small>" +
+            (soni[r.oy] > 1 && eng[r.oy] === r.m ? '<span class="pill">ENG ARZON</span>' : "") + '</div><div class="j">jami<br>' + fmt(r.j) + "</div></div>";
+        }).join("") + "</div>";
     }).join("");
+    box.innerHTML = html + (cfg.i ? '<div class="note">' + esc(cfg.i) + "</div>" : "");
   }
 
-  inp.addEventListener("input", function () {
-    var v = narx(); inp.value = v ? fmt(v) : ""; hisobla();
-  });
-  chips(); hisobla(); inp.focus();
-
-  function admin() {
-    var namuna = 1000000, q = cfg.q || 1000;
-    var fmtA = function (x) { return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); };
-    var escA = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
-    document.querySelector("main").className = "adm";
-    document.querySelector("main").innerHTML =
-      '<h1>💰 Ustama (foyda)</h1><div class="sub">Har nasiya uchun narxga qo\'shiladigan ustamamiz. Xodimlar buni ko\'rmaydi. ' +
-      'Pastda 1 000 000 so\'mlik mahsulotga oylik to\'lov namunasi.</div><div id="list"></div>' +
-      '<button class="save" id="save">Saqlash</button><div class="note">Saqlangach bot hammaga yangi tugma yuboradi.</div>';
-    var list = document.getElementById("list");
-    list.innerHTML = cfg.n.map(function (n, i) {
-      return '<div class="card' + (n.on ? "" : " off") + '" id="c' + i + '"><h2><span>🏦 ' + escA(n.nomi) + '</span>' +
-        '<label class="sw"><input type="checkbox" data-i="' + i + '"' + (n.on ? " checked" : "") + '><span></span></label></h2>' +
-        '<div class="ust"><label>Bizning ustama</label><button class="step" data-i="' + i + '" data-d="-1">−</button>' +
-        '<input inputmode="decimal" data-i="' + i + '" value="' + n.u + '"><button class="step" data-i="' + i + '" data-d="1">+</button>' +
-        '<span style="font-weight:700">%</span></div><div class="fz" id="f' + i + '"></div></div>';
-    }).join("");
+  // ---------- USTAMA (faqat admin) ----------
+  var dirty = false;
+  function ustView() {
+    document.getElementById("ttl").innerHTML = "Ustama (foyda)<small>faqat admin ko'radi</small>";
+    var namuna = 1000000;
+    app.innerHTML = '<div class="muted note" style="text-align:left;margin:2px 2px 12px">Har nasiya uchun narxga qo\'shiladigan ustamamiz. Xodim faqat yakuniy oylik to\'lovni ko\'radi. Namuna — 1 000 000 so\'mlik mahsulot.</div>' +
+      cfg.n.map(function (n, i) {
+        if (!n.on && !n.f.length) return "";
+        return '<div class="card' + (n.on ? "" : " off") + '" id="c' + i + '" style="animation-delay:' + (i * 30) + 'ms"><div class="ph"><div class="av">' + esc(n.nomi.charAt(0)) + '</div><h3>' + esc(n.nomi) + '</h3>' +
+          '<label class="sw"><input type="checkbox" data-i="' + i + '"' + (n.on ? " checked" : "") + '><span></span></label></div>' +
+          '<div class="ust"><div class="t">Bizning ustama</div><button class="step" data-i="' + i + '" data-d="-1">−</button>' +
+          '<input inputmode="decimal" data-i="' + i + '" value="' + n.u + '"><button class="step" data-i="' + i + '" data-d="1">+</button><b>%</b></div>' +
+          '<div class="fz" id="f' + i + '"></div></div>';
+      }).join("") + '<button class="btn" id="save">💾 Saqlash</button><div class="note">Saqlangach bot hamma xodimga yangilangan tugma yuboradi.</div>';
     function preview(i) {
-      var n = cfg.n[i], u = parseFloat(String(n.u).replace(",", ".")) || 0;
-      document.getElementById("f" + i).innerHTML = n.f.length ? n.f.map(function (r) {
-        var oylik = Math.ceil(namuna * (1 + u / 100) * (1 + r[1] / 100) / r[0] / q) * q;
-        return r[0] + " oy (nasiya " + r[1] + "%): <b>" + fmtA(oylik) + "</b>/oy";
+      var n = cfg.n[i], u = parseFloat(String(n.u).replace(",", ".")) || 0, el = document.getElementById("f" + i);
+      if (!el) return;
+      el.innerHTML = n.f.length ? n.f.map(function (r) {
+        return r[0] + " oy · nasiya " + r[1] + "% → <b>" + fmt(Math.ceil(namuna * (1 + u / 100) * (1 + r[1] / 100) / r[0] / q) * q) + "</b> so'm/oy";
       }).join("<br>") : "Nasiya foizlari kiritilmagan";
     }
     cfg.n.forEach(function (_, i) { preview(i); });
-    var dirty = false;
-    function changed() {
-      dirty = true;
-      if (tg && tg.MainButton && tg.sendData) { tg.MainButton.setText("💾 Saqlash"); tg.MainButton.show(); }
-      else document.getElementById("save").style.display = "block";
-    }
-    list.addEventListener("input", function (e) {
+    app.oninput = function (e) {
       var i = e.target.dataset.i; if (i === undefined) return;
-      if (e.target.type === "checkbox") { cfg.n[i].on = e.target.checked; document.getElementById("c" + i).classList.toggle("off", !e.target.checked); }
+      if (e.target.type === "checkbox") { cfg.n[i].on = e.target.checked; document.getElementById("c" + i).classList.toggle("off", !e.target.checked); hap("light"); }
       else { cfg.n[i].u = e.target.value; preview(i); }
-      changed();
-    });
-    list.addEventListener("click", function (e) {
-      var b = e.target.closest(".step"); if (!b) return;
-      var i = b.dataset.i, n = cfg.n[i];
-      var v = Math.max(0, Math.min(100, (parseFloat(String(n.u).replace(",", ".")) || 0) + (+b.dataset.d)));
-      n.u = Math.round(v * 10) / 10;
-      list.querySelector('input[inputmode][data-i="' + i + '"]').value = n.u;
-      preview(i); changed();
-      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
-    });
-    function save() {
-      var bad = cfg.n.filter(function (n) { var v = parseFloat(String(n.u).replace(",", ".")); return isNaN(v) || v < 0 || v > 100; });
-      if (bad.length) { (tg && tg.showAlert) ? tg.showAlert("Ustama 0–100% oralig'ida bo'lsin: " + bad[0].nomi) : alert("0–100%"); return; }
-      var d = { u: {}, on: {} };
-      cfg.n.forEach(function (n) { d.u[n.k] = parseFloat(String(n.u).replace(",", ".")); d.on[n.k] = !!n.on; });
-      if (tg && tg.sendData) tg.sendData(JSON.stringify(d));
-    }
-    if (tg && tg.MainButton) tg.MainButton.onClick(save);
-    document.getElementById("save").addEventListener("click", save);
+      dirty = true;
+    };
+    app.onclick = function (e) {
+      var b = e.target.closest(".step");
+      if (b) {
+        var i = b.dataset.i, n = cfg.n[i];
+        n.u = Math.round(Math.max(0, Math.min(100, (parseFloat(String(n.u).replace(",", ".")) || 0) + (+b.dataset.d))) * 10) / 10;
+        app.querySelector('input[inputmode][data-i="' + i + '"]').value = n.u; preview(i); dirty = true; hap("light");
+      }
+      if (e.target.closest("#save")) save();
+    };
   }
+  function save() {
+    var bad = cfg.n.filter(function (n) { var v = parseFloat(String(n.u).replace(",", ".")); return isNaN(v) || v < 0 || v > 100; });
+    if (bad.length) return alertBox("Ustama 0–100% oralig'ida bo'lsin: " + bad[0].nomi);
+    var d = { u: {}, on: {} };
+    cfg.n.forEach(function (n) { d.u[n.k] = parseFloat(String(n.u).replace(",", ".")); d.on[n.k] = !!n.on; });
+    if (tg && tg.sendData && tg.initData !== undefined) { hap("medium"); tg.sendData(JSON.stringify(d)); }
+    else alertBox("Saqlash faqat Telegram ichida, botdagi «💰 Ustama» tugmasi orqali ishlaydi.");
+  }
+  function alertBox(t) { if (tg && tg.showAlert) tg.showAlert(t); else alert(t); }
+
+  // ---------- tablar ----------
+  var tabs = document.getElementById("tabs");
+  function tab(t) {
+    tabs.querySelectorAll("button").forEach(function (b) { b.classList.toggle("on", b.dataset.t === t); });
+    app.oninput = null; app.onclick = null;
+    (t === "ust" ? ustView : calcView)();
+    window.scrollTo(0, 0);
+  }
+  if (ADMIN) { tabs.classList.remove("hide"); tabs.onclick = function (e) { var b = e.target.closest("button"); if (b) { hap(); tab(b.dataset.t); } }; }
+  else document.body.style.paddingBottom = "24px";
+  tab(ADMIN && param("t") === "u" ? "ust" : "calc");
 })();
 </script>
 </body>
