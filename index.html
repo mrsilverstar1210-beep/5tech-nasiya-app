@@ -50,6 +50,12 @@
   .ph { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
   .ph .av { width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center; font-weight:750; color:var(--act);
     background:linear-gradient(135deg, var(--ac), var(--ac2)); flex:none; }
+  .price.sm input { font-size:22px; }
+  .biz { display:flex; gap:8px; margin:6px 0 4px; }
+  .biz > div { flex:1; background:var(--soft); border-radius:12px; padding:7px 10px; min-width:0; }
+  .biz > div.b1 { flex:1.3; background:linear-gradient(135deg, color-mix(in srgb, var(--ac) 22%, var(--card)), var(--soft)); }
+  .biz small { display:block; font-size:11.5px; color:var(--hint); }
+  .biz b { font-size:14.5px; color:var(--acink); font-variant-numeric:tabular-nums; white-space:nowrap; }
   .ph h3 { margin:0; font-size:16px; flex:1; }
   .line { display:flex; align-items:baseline; gap:10px; padding:10px 0; border-bottom:1px solid var(--line); }
   .line:last-child { border-bottom:0; padding-bottom:2px; }
@@ -122,32 +128,36 @@
   // admin ma'lumotidan hisob koeffitsientlarini tuzamiz
   if (ADMIN) cfg.n.forEach(function (n) { n.r = n.f.map(function (r) { return [r[0], 0]; }); });
   function koef() {
+    // har nasiya: nomi, u (bizning ustama %), r: [[oy, nasiya foizi %]]
     if (!ADMIN) return cfg.n;
     return cfg.n.filter(function (n) { return n.on; }).map(function (n) {
-      var u = 1 + (parseFloat(String(n.u).replace(",", ".")) || 0) / 100;
-      return { nomi: n.nomi, r: n.f.map(function (r) { return [r[0], u * (1 + r[1] / 100)]; }) };
+      return { nomi: n.nomi, u: parseFloat(String(n.u).replace(",", ".")) || 0, r: n.f };
     }).filter(function (n) { return n.r.length; });
   }
 
   var app = document.getElementById("app"), q = cfg.q || 1000;
+  var up = function (x, q) { return Math.ceil(Math.round(x * 1e4) / 1e4 / q) * q; };
   var fmt = function (x) { return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
   var hap = function (t) { try { tg && tg.HapticFeedback && (t ? tg.HapticFeedback.impactOccurred(t) : tg.HapticFeedback.selectionChanged()); } catch (e) {} };
 
   // ---------- HISOBLASH ----------
-  var narx = 0, filtr = 0;
+  var narx = 0, bosh = 0, filtr = 0;
   function calcView() {
     document.getElementById("ttl").innerHTML = "Nasiya hisobi<small>5Tech</small>";
     var N = koef(), oylar = [];
     N.forEach(function (n) { n.r.forEach(function (r) { if (oylar.indexOf(r[0]) < 0) oylar.push(r[0]); }); });
     oylar.sort(function (a, b) { return a - b; });
     if (filtr && oylar.indexOf(filtr) < 0) filtr = 0;
-    app.innerHTML = '<div class="card"><div class="lbl">Mahsulot narxi</div><div class="price"><input id="narx" inputmode="numeric" autocomplete="off" placeholder="0" value="' + (narx ? fmt(narx) : "") + '"><span>so\'m</span></div></div>' +
+    app.innerHTML = '<div class="card"><div class="lbl">Mahsulot narxi</div><div class="price"><input id="narx" inputmode="numeric" autocomplete="off" placeholder="0" value="' + (narx ? fmt(narx) : "") + '"><span>so\'m</span></div>' +
+      '<div class="lbl" style="margin-top:10px">Oldindan to\'lov (boshlang\'ich)</div><div class="price sm"><input id="bosh" inputmode="numeric" autocomplete="off" placeholder="0" value="' + (bosh ? fmt(bosh) : "") + '"><span>so\'m</span></div></div>' +
       '<div class="chips" id="oy">' + ['<button class="chip' + (!filtr ? " on" : "") + '" data-oy="0">Hammasi</button>'].concat(oylar.map(function (o) {
         return '<button class="chip' + (filtr === o ? " on" : "") + '" data-oy="' + o + '">' + o + " oy</button>"; })).join("") + "</div>" +
       '<div id="res"></div>';
     var inp = document.getElementById("narx");
     inp.oninput = function () { narx = +inp.value.replace(/\D/g, "") || 0; inp.value = narx ? fmt(narx) : ""; res(); };
+    var bi = document.getElementById("bosh");
+    bi.oninput = function () { bosh = +bi.value.replace(/\D/g, "") || 0; bi.value = bosh ? fmt(bosh) : ""; res(); };
     document.getElementById("oy").onclick = function (e) { var b = e.target.closest("button"); if (!b) return; filtr = +b.dataset.oy; hap(); calcView(); };
     res();
     if (!narx) setTimeout(function () { inp.focus(); }, 150);
@@ -156,23 +166,29 @@
     var box = document.getElementById("res"), N = koef();
     if (!N.length) { box.innerHTML = '<div class="empty">Nasiya foizlari hali kiritilmagan.</div>'; return; }
     if (narx < 10000) { box.innerHTML = '<div class="empty">Narxni kiriting — har bir nasiya bo\'yicha oylik to\'lov shu yerda chiqadi.</div>'; return; }
-    var eng = {}, soni = {}, all = [];
+    var eng = {}, soni = {}, all = [], xato = "";
     var data = N.map(function (n) {
-      return { nomi: n.nomi, r: n.r.filter(function (r) { return !filtr || r[0] === filtr; }).map(function (r) {
-        var m = Math.ceil(narx * r[1] / r[0] / q) * q, x = { oy: r[0], m: m, j: m * r[0], nomi: n.nomi };
+      // ustama faqat nasiyaga o'tadigan qismga qo'yiladi, oldindan to'lovga emas
+      if (narx - bosh <= 0) { xato = "Oldindan to'lov narxdan katta yoki teng — nasiya kerak emas."; return { nomi: n.nomi, r: [] }; }
+      var kredit = up((narx - bosh) * (1 + n.u / 100), q);   // nasiyadan keladigan pul
+      var asos = bosh + kredit;                                         // bizga tushadigan jami pul
+      return { nomi: n.nomi, asos: asos, kredit: kredit, r: n.r.filter(function (r) { return !filtr || r[0] === filtr; }).map(function (r) {
+        var m = up(kredit * (1 + r[1] / 100) / r[0], q), x = { oy: r[0], m: m, j: bosh + m * r[0], nomi: n.nomi };
         soni[r[0]] = (soni[r[0]] || 0) + 1; if (!(r[0] in eng) || m < eng[r[0]]) eng[r[0]] = m; all.push(x); return x;
       }) };
     }).filter(function (n) { return n.r.length; });
-    if (!data.length) { box.innerHTML = '<div class="empty">Bu muddat bo\'yicha nasiya yo\'q.</div>'; return; }
+    if (!data.length) { box.innerHTML = '<div class="empty">' + (xato || "Bu muddat bo'yicha nasiya yo'q.") + '</div>'; return; }
     var minOylik = all.reduce(function (a, b) { return b.m < a.m ? b : a; });
     var minJami = all.reduce(function (a, b) { return b.j < a.j ? b : a; });
     var html = '<div class="kpi"><div><small><i></i>Eng kam oylik</small><b>' + fmt(minOylik.m) + '</b><em>' + esc(minOylik.nomi) + " · " + minOylik.oy + ' oy</em></div>' +
-      '<div class="b2"><small><i></i>Eng kam jami to\'lov</small><b>' + fmt(minJami.j) + '</b><em>' + esc(minJami.nomi) + " · " + minJami.oy + ' oy</em></div></div>';
+      '<div class="b2"><small><i></i>Mijoz jami to\'laydi</small><b>' + fmt(minJami.j) + '</b><em>eng kami: ' + esc(minJami.nomi) + " · " + minJami.oy + ' oy</em></div></div>';
     html += data.map(function (n, i) {
       return '<div class="card" style="animation-delay:' + (i * 40) + 'ms"><div class="ph"><div class="av">' + esc(n.nomi.charAt(0)) + '</div><h3>' + esc(n.nomi) + '</h3></div>' +
+        '<div class="biz"><div class="b1"><small>💰 Bizga tushadi</small><b>' + fmt(n.asos) + '</b></div>' +
+        (bosh ? '<div><small>Oldindan</small><b>' + fmt(bosh) + '</b></div><div><small>Nasiyadan</small><b>' + fmt(n.kredit) + '</b></div>' : "") + '</div>' +
         n.r.map(function (r) {
           return '<div class="line"><div class="oy">' + r.oy + ' oy</div><div class="m">' + fmt(r.m) + " <small>so'm/oy</small>" +
-            (soni[r.oy] > 1 && eng[r.oy] === r.m ? '<span class="pill">ENG ARZON</span>' : "") + '</div><div class="j">jami<br>' + fmt(r.j) + "</div></div>";
+            (soni[r.oy] > 1 && eng[r.oy] === r.m ? '<span class="pill">ENG ARZON</span>' : "") + '</div><div class="j">mijoz jami<br>' + fmt(r.j) + "</div></div>";
         }).join("") + "</div>";
     }).join("");
     box.innerHTML = html + (cfg.i ? '<div class="note">' + esc(cfg.i) + "</div>" : "");
@@ -196,7 +212,7 @@
       var n = cfg.n[i], u = parseFloat(String(n.u).replace(",", ".")) || 0, el = document.getElementById("f" + i);
       if (!el) return;
       el.innerHTML = n.f.length ? n.f.map(function (r) {
-        return r[0] + " oy · nasiya " + r[1] + "% → <b>" + fmt(Math.ceil(namuna * (1 + u / 100) * (1 + r[1] / 100) / r[0] / q) * q) + "</b> so'm/oy";
+        return r[0] + " oy · nasiya " + r[1] + "% → <b>" + fmt(up(up(namuna * (1 + u / 100), q) * (1 + r[1] / 100) / r[0], q)) + "</b> so'm/oy";
       }).join("<br>") : "Nasiya foizlari kiritilmagan";
     }
     cfg.n.forEach(function (_, i) { preview(i); });
