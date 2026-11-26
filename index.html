@@ -41,6 +41,22 @@
   .best { display: block; color: var(--accent); font-size: 11px; font-weight: 700; white-space: nowrap; }
   .empty { text-align: center; color: var(--hint); padding: 40px 16px; }
   .note { color: var(--hint); font-size: 12px; text-align: center; margin-top: 16px; }
+  .adm .card h2 { align-items: center; }
+  .sw { position: relative; width: 44px; height: 26px; flex: none; }
+  .sw input { opacity: 0; width: 0; height: 0; }
+  .sw span { position: absolute; inset: 0; border-radius: 13px; background: var(--sep); transition: .2s; }
+  .sw span::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+  .sw input:checked + span { background: var(--accent); }
+  .sw input:checked + span::after { transform: translateX(18px); }
+  .ust { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--sep); }
+  .ust label { flex: 1; color: var(--hint); font-size: 13px; }
+  .step { width: 36px; height: 36px; border-radius: 10px; border: 0; background: var(--bg2); color: var(--text); font-size: 20px; font-weight: 700; }
+  .ust input { width: 72px; text-align: center; border: 1px solid var(--sep); border-radius: 10px; padding: 7px 4px;
+    background: var(--bg); color: var(--text); font-size: 18px; font-weight: 700; }
+  .fz { padding: 10px 16px 12px; font-size: 12px; color: var(--hint); line-height: 1.7; }
+  .fz b { color: var(--text); font-weight: 600; }
+  .off { opacity: .45; }
+  .save { display: none; width: 100%; margin-top: 16px; border: 0; border-radius: 12px; padding: 14px; background: var(--accent); color: var(--accent-text); font-size: 16px; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -65,6 +81,8 @@
     cfg = JSON.parse(new TextDecoder().decode(bytes));
   } catch (e) { /* bo'sh qoladi */ }
 
+
+  if (cfg.a) { admin(); return; }
   var inp = document.getElementById("narx"), out = document.getElementById("natija");
   var chipsEl = document.getElementById("oylar"), filtr = 0;
   document.getElementById("note").textContent = cfg.i || "";
@@ -115,6 +133,63 @@
     var v = narx(); inp.value = v ? fmt(v) : ""; hisobla();
   });
   chips(); hisobla(); inp.focus();
+
+  function admin() {
+    var namuna = 1000000, q = cfg.q || 1000;
+    var fmtA = function (x) { return Math.round(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); };
+    var escA = function (t) { return String(t).replace(/[&<>"]/g, function (c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); };
+    document.querySelector("main").className = "adm";
+    document.querySelector("main").innerHTML =
+      '<h1>💰 Ustama (foyda)</h1><div class="sub">Har nasiya uchun narxga qo\'shiladigan ustamamiz. Xodimlar buni ko\'rmaydi. ' +
+      'Pastda 1 000 000 so\'mlik mahsulotga oylik to\'lov namunasi.</div><div id="list"></div>' +
+      '<button class="save" id="save">Saqlash</button><div class="note">Saqlangach bot hammaga yangi tugma yuboradi.</div>';
+    var list = document.getElementById("list");
+    list.innerHTML = cfg.n.map(function (n, i) {
+      return '<div class="card' + (n.on ? "" : " off") + '" id="c' + i + '"><h2><span>🏦 ' + escA(n.nomi) + '</span>' +
+        '<label class="sw"><input type="checkbox" data-i="' + i + '"' + (n.on ? " checked" : "") + '><span></span></label></h2>' +
+        '<div class="ust"><label>Bizning ustama</label><button class="step" data-i="' + i + '" data-d="-1">−</button>' +
+        '<input inputmode="decimal" data-i="' + i + '" value="' + n.u + '"><button class="step" data-i="' + i + '" data-d="1">+</button>' +
+        '<span style="font-weight:700">%</span></div><div class="fz" id="f' + i + '"></div></div>';
+    }).join("");
+    function preview(i) {
+      var n = cfg.n[i], u = parseFloat(String(n.u).replace(",", ".")) || 0;
+      document.getElementById("f" + i).innerHTML = n.f.length ? n.f.map(function (r) {
+        var oylik = Math.ceil(namuna * (1 + u / 100) * (1 + r[1] / 100) / r[0] / q) * q;
+        return r[0] + " oy (nasiya " + r[1] + "%): <b>" + fmtA(oylik) + "</b>/oy";
+      }).join("<br>") : "Nasiya foizlari kiritilmagan";
+    }
+    cfg.n.forEach(function (_, i) { preview(i); });
+    var dirty = false;
+    function changed() {
+      dirty = true;
+      if (tg && tg.MainButton && tg.sendData) { tg.MainButton.setText("💾 Saqlash"); tg.MainButton.show(); }
+      else document.getElementById("save").style.display = "block";
+    }
+    list.addEventListener("input", function (e) {
+      var i = e.target.dataset.i; if (i === undefined) return;
+      if (e.target.type === "checkbox") { cfg.n[i].on = e.target.checked; document.getElementById("c" + i).classList.toggle("off", !e.target.checked); }
+      else { cfg.n[i].u = e.target.value; preview(i); }
+      changed();
+    });
+    list.addEventListener("click", function (e) {
+      var b = e.target.closest(".step"); if (!b) return;
+      var i = b.dataset.i, n = cfg.n[i];
+      var v = Math.max(0, Math.min(100, (parseFloat(String(n.u).replace(",", ".")) || 0) + (+b.dataset.d)));
+      n.u = Math.round(v * 10) / 10;
+      list.querySelector('input[inputmode][data-i="' + i + '"]').value = n.u;
+      preview(i); changed();
+      if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred("light");
+    });
+    function save() {
+      var bad = cfg.n.filter(function (n) { var v = parseFloat(String(n.u).replace(",", ".")); return isNaN(v) || v < 0 || v > 100; });
+      if (bad.length) { (tg && tg.showAlert) ? tg.showAlert("Ustama 0–100% oralig'ida bo'lsin: " + bad[0].nomi) : alert("0–100%"); return; }
+      var d = { u: {}, on: {} };
+      cfg.n.forEach(function (n) { d.u[n.k] = parseFloat(String(n.u).replace(",", ".")); d.on[n.k] = !!n.on; });
+      if (tg && tg.sendData) tg.sendData(JSON.stringify(d));
+    }
+    if (tg && tg.MainButton) tg.MainButton.onClick(save);
+    document.getElementById("save").addEventListener("click", save);
+  }
 })();
 </script>
 </body>
